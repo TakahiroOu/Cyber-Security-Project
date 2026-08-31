@@ -1,16 +1,13 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from .models import Question, Choice
-
-#fix5: add this:
-#from .models import Vote
-
 from django.http import Http404
 from django.db.models import F
 from django.urls import reverse
 from django.db import connection
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -56,21 +53,12 @@ def results(request, question_id):
 #Add this right before def vote():
 #
 # @login_required
+
+#FIX5:
+#Remove @csrf_exempt and use Django's default CSRF protection:
+@csrf_exempt
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
-    
-    #Fix 5:
-    #Add the code to def vote():
-    #
-    #if Vote.objects.filter(user=request.user, question=question).exists():
-    #    return render(
-    #        request,
-    #        "polls/detail.html",
-    #        {
-    #            "question": question,
-    #            "error_message": "You have already voted.",
-    #        },
-    #    )
     
     try:
         selected_choice = question.choice_set.get(pk=request.POST["choice"])
@@ -86,14 +74,6 @@ def vote(request, question_id):
     else:
         selected_choice.votes = F("votes") + 1
         selected_choice.save()
-
-        #Fix5:
-        #Add this code to def vote():
-        #
-        # Vote.objects.create(
-        #   user=request.user,
-        #    question=question)
-
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
 
 
@@ -105,7 +85,6 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        # VULNERABLE: unlimited login attempts
         user = authenticate(
             request,
             username=username,

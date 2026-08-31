@@ -23,12 +23,3 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
-
-#Fix5:
-#Add this code to models.py:
-#
-#class Vote(models.Model):
-#    user = models.ForeignKey(User, on_delete=models.CASCADE)
-#    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-#    class Meta:
-#        unique_together = ("user", "question")

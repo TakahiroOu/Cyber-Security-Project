@@ -12,7 +12,7 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
 
     path("<question_id>/", views.detail, name="detail"),
-    # FIX:
+    # FIX2:
     # Restrict question_id to an integer:
     #
     # path("<int:question_id>/", views.detail, name="detail"),
