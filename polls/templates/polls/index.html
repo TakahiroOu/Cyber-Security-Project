@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>My test page</title>
+  </head>
+
+  <body>
+    {% if user.is_authenticated %}
+    <p>
+        Logged in as <strong>{{ user.username }}</strong>
+        |
+        <a href="{% url 'polls:logout' %}">Logout</a>
+    </p>
+{% else %}
+    <p>
+        <a href="{% url 'polls:login' %}">Login</a>
+    </p>
+{% endif %}
+
+    {% if latest_question_list %}
+      <ul>
+      {% for question in latest_question_list %}
+        <li>
+          <a href="{% url 'polls:detail' question.id %}">
+            {{ question.question_text }}
+          </a>
+        </li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>No polls are available.</p>
+    {% endif %}
+
+  </body>
+</html>
